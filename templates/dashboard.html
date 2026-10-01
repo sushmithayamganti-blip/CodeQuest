@@ -1,46 +1,559 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>CodeQuest - Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeQuest | Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            color: white;
+            background:
+                radial-gradient(circle at 10% 10%, #35106b, transparent 30%),
+                radial-gradient(circle at 90% 80%, #004c66, transparent 30%),
+                linear-gradient(135deg, #070018, #10002b, #001a2b);
+        }
+
+        /* NAVBAR */
+
+        nav {
+            height: 72px;
+            padding: 0 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(5, 3, 20, 0.65);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            font-size: 28px;
+        }
+
+        .logo h2 {
+            color: #00d9ff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 12px rgba(0,217,255,0.5);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .player-name {
+            color: #d7d5e5;
+            font-size: 14px;
+        }
+
+        .logout {
+            padding: 9px 18px;
+            border: 1px solid #443b68;
+            border-radius: 8px;
+            color: #bdb9d1;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .logout:hover {
+            border-color: #00d9ff;
+            color: #00d9ff;
+        }
+
+        /* MAIN */
+
+        .main {
+            width: 88%;
+            max-width: 1250px;
+            margin: auto;
+            padding: 40px 0;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome p {
+            color: #8f8ba5;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .welcome h1 {
+            font-size: 34px;
+        }
+
+        .welcome h1 span {
+            color: #00d9ff;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .stat {
+            padding: 22px;
+            border-radius: 16px;
+            background: rgba(14, 10, 38, 0.8);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .stat h3 {
+            font-size: 25px;
+            margin-bottom: 5px;
+        }
+
+        .stat p {
+            color: #858197;
+            font-size: 12px;
+        }
+
+        /* GAME AREA */
+
+        .game-section {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 22px;
+        }
+
+        .play-card {
+            padding: 35px;
+            border-radius: 20px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(83,35,160,0.55),
+                    rgba(0,90,120,0.35)
+                );
+            border: 1px solid rgba(0,217,255,0.2);
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .play-card small {
+            color: #00d9ff;
+            letter-spacing: 2px;
+        }
+
+        .play-card h2 {
+            font-size: 32px;
+            margin: 12px 0;
+        }
+
+        .play-card p {
+            color: #b7b3c8;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .play-btn {
+            display: inline-block;
+            width: fit-content;
+            margin-top: 25px;
+            padding: 14px 30px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #6c2cff, #00bfff);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(0,191,255,0.25);
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* LEVELS */
+
+        .levels {
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(14,10,38,0.8);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .levels h2 {
+            margin-bottom: 18px;
+        }
+
+        .level {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.035);
+        }
+
+        .level-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .level-name span {
+            font-size: 18px;
+        }
+
+        .level small {
+            color: #77738b;
+        }
+
+        .locked {
+            opacity: 0.45;
+        }
+
+        /* PROGRESS */
+
+        .progress-section {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 18px;
+            background: rgba(14,10,38,0.8);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-top span {
+            color: #9b97ad;
+            font-size: 13px;
+        }
+
+        .bar {
+            width: 100%;
+            height: 9px;
+            border-radius: 20px;
+            background: #211c38;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            width: 35%;
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #6c2cff, #00d9ff);
+        }
+
+        /* ACHIEVEMENTS */
+
+        .achievements {
+            margin-top: 25px;
+        }
+
+        .achievements h2 {
+            margin-bottom: 15px;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .achievement {
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            background: rgba(14,10,38,0.8);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .achievement div {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .achievement h4 {
+            margin-bottom: 5px;
+        }
+
+        .achievement p {
+            color: #77738b;
+            font-size: 11px;
+        }
+
+        @media (max-width: 850px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .game-section {
+                grid-template-columns: 1fr;
+            }
+
+            .achievement-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-right .player-name {
+                display: none;
+            }
+
+            .main {
+                width: 92%;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🎮 Welcome to CodeQuest!</h1>
+    <!-- NAVBAR -->
 
-    <h2>Hello, {{ user.username }} 👋</h2>
+    <nav>
 
-    <hr>
+        <div class="logo">
+            <span>🎮</span>
+            <h2>CODEQUEST</h2>
+        </div>
 
-    <h3>Your Progress</h3>
+        <div class="nav-right">
 
-    <p>
-        ⭐ Points:
-        <strong>{{ user.points }}</strong>
-    </p>
+            <div class="player-name">
+                👤 {{ user["username"] }}
+            </div>
 
-    <p>
-        🏆 Level:
-        <strong>{{ user.level }}</strong>
-    </p>
+            <a href="/logout" class="logout">
+                Logout
+            </a>
 
-    <br>
+        </div>
 
-    <h3>🚀 Start Coding</h3>
+    </nav>
 
-    <p>Choose your difficulty:</p>
 
-    <button>Easy</button>
-    <button>Medium</button>
-    <button>Hard</button>
+    <!-- MAIN -->
 
-    <br><br>
+    <div class="main">
 
-    <a href="/logout">
-        <button>Logout</button>
-    </a>
+        <div class="welcome">
+
+            <p>WELCOME BACK, PLAYER</p>
+
+            <h1>
+                Ready to <span>CodeQuest?</span> 🚀
+            </h1>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-icon">⭐</div>
+                <h3>{{ user["points"] }}</h3>
+                <p>TOTAL XP</p>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon">🏆</div>
+                <h3>{{ user["level"] }}</h3>
+                <p>CURRENT LEVEL</p>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon">🔥</div>
+                <h3>0</h3>
+                <p>DAY STREAK</p>
+            </div>
+
+            <div class="stat">
+                <div class="stat-icon">❤️</div>
+                <h3>5</h3>
+                <p>LIVES</p>
+            </div>
+
+        </div>
+
+
+        <!-- GAME -->
+
+        <div class="game-section">
+
+            <div class="play-card">
+
+                <small>CODING ARENA</small>
+
+                <h2>Enter the Quest 🎯</h2>
+
+                <p>
+                    Test your programming skills, solve challenges,
+                    earn XP and unlock new levels.
+                </p>
+
+                <a href="#" class="play-btn">
+                    ⚡ PLAY NOW
+                </a>
+
+            </div>
+
+
+            <!-- LEVELS -->
+
+            <div class="levels">
+
+                <h2>🎮 Quest Levels</h2>
+
+                <div class="level">
+
+                    <div class="level-name">
+                        🟢
+                        <strong>Easy</strong>
+                    </div>
+
+                    <small>UNLOCKED</small>
+
+                </div>
+
+                <div class="level">
+
+                    <div class="level-name">
+                        🟡
+                        <strong>Medium</strong>
+                    </div>
+
+                    <small>LOCKED</small>
+
+                </div>
+
+                <div class="level locked">
+
+                    <div class="level-name">
+                        🔴
+                        <strong>Hard</strong>
+                    </div>
+
+                    <small>LOCKED</small>
+
+                </div>
+
+                <div class="level locked">
+
+                    <div class="level-name">
+                        🔥
+                        <strong>Advanced</strong>
+                    </div>
+
+                    <small>LOCKED</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="progress-section">
+
+            <div class="progress-top">
+
+                <strong>Level {{ user["level"] }} Progress</strong>
+
+                <span>{{ user["points"] }} XP</span>
+
+            </div>
+
+            <div class="bar">
+
+                <div class="bar-fill"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACHIEVEMENTS -->
+
+        <div class="achievements">
+
+            <h2>🏅 Achievements</h2>
+
+            <div class="achievement-grid">
+
+                <div class="achievement">
+
+                    <div>🚀</div>
+
+                    <h4>First Quest</h4>
+
+                    <p>Complete your first challenge</p>
+
+                </div>
+
+                <div class="achievement">
+
+                    <div>🔥</div>
+
+                    <h4>On Fire</h4>
+
+                    <p>Build a 5-day streak</p>
+
+                </div>
+
+                <div class="achievement">
+
+                    <div>👑</div>
+
+                    <h4>Code Master</h4>
+
+                    <p>Reach Level 10</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </body>
-
 </html>
