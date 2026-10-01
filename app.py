@@ -1,36 +1,52 @@
 from flask import Flask, render_template, request, redirect, session
-import mysql.connector
-import os
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import sqlite3
+import os
 
 app = Flask(__name__)
-
-
-# ==========================================
-# SECRET KEY
-# ==========================================
 
 app.secret_key = os.getenv(
     "SECRET_KEY",
     "codequest-development-key"
 )
 
-
-# ==========================================
-# MYSQL DATABASE CONNECTION
-# ==========================================
-
-db = mysql.connector.connect(
-    host=os.getenv("DB_HOST", "localhost"),
-    user=os.getenv("DB_USER", "root"),
-    password=os.getenv("DB_PASSWORD"),
-    database=os.getenv("DB_NAME", "codequest")
-)
+DATABASE = "codequest.db"
 
 
 # ==========================================
-# HOME PAGE
+# DATABASE
+# ==========================================
+
+def get_db():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def create_database():
+    conn = get_db()
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            points INTEGER DEFAULT 0,
+            level INTEGER DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+create_database()
+
+
+# ==========================================
+# HOME
 # ==========================================
 
 @app.route("/")
@@ -52,40 +68,29 @@ def signup():
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
 
-        # Check whether passwords match
         if password != confirm_password:
             return "Passwords do not match!"
 
-        # Hash password before storing it
         hashed_password = generate_password_hash(password)
 
         try:
+            conn = get_db()
 
-            cursor = db.cursor()
+            conn.execute("""
+                INSERT INTO users
+                (username, email, password)
+                VALUES (?, ?, ?)
+            """, (username, email, hashed_password))
 
-            query = """
-            INSERT INTO users
-            (username, email, password)
-            VALUES (%s, %s, %s)
-            """
-
-            cursor.execute(
-                query,
-                (username, email, hashed_password)
-            )
-
-            db.commit()
-
-            cursor.close()
+            conn.commit()
+            conn.close()
 
             return redirect("/login")
 
-        except mysql.connector.IntegrityError:
-
+        except sqlite3.IntegrityError:
             return "Username or email already exists!"
 
         except Exception as e:
-
             return f"Database error: {e}"
 
     return render_template("signup.html")
@@ -103,42 +108,27 @@ def login():
         username_or_email = request.form["username"]
         password = request.form["password"]
 
-        cursor = db.cursor(dictionary=True)
+        conn = get_db()
 
-        query = """
-        SELECT *
-        FROM users
-        WHERE username = %s OR email = %s
-        """
+        user = conn.execute("""
+            SELECT *
+            FROM users
+            WHERE username = ? OR email = ?
+        """, (username_or_email, username_or_email)).fetchone()
 
-        cursor.execute(
-            query,
-            (username_or_email, username_or_email)
-        )
+        conn.close()
 
-        user = cursor.fetchone()
-
-        cursor.close()
-
-        # Check whether user exists
         if user is None:
-
             return "User not found!"
 
-        # Check password
-        if check_password_hash(
-            user["password"],
-            password
-        ):
+        if check_password_hash(user["password"], password):
 
             session["user_id"] = user["id"]
             session["username"] = user["username"]
 
             return redirect("/dashboard")
 
-        else:
-
-            return "Incorrect password!"
+        return "Incorrect password!"
 
     return render_template("login.html")
 
@@ -150,27 +140,18 @@ def login():
 @app.route("/dashboard")
 def dashboard():
 
-    # Check whether user is logged in
     if "user_id" not in session:
-
         return redirect("/login")
 
-    cursor = db.cursor(dictionary=True)
+    conn = get_db()
 
-    query = """
-    SELECT *
-    FROM users
-    WHERE id = %s
-    """
+    user = conn.execute("""
+        SELECT *
+        FROM users
+        WHERE id = ?
+    """, (session["user_id"],)).fetchone()
 
-    cursor.execute(
-        query,
-        (session["user_id"],)
-    )
-
-    user = cursor.fetchone()
-
-    cursor.close()
+    conn.close()
 
     return render_template(
         "dashboard.html",
@@ -191,9 +172,15 @@ def logout():
 
 
 # ==========================================
-# RUN CODEQUEST
+# RUN
 # ==========================================
 
 if __name__ == "__main__":
 
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )
