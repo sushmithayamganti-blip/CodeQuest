@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CodeQuest - Dashboard</title>
+</head>
+
+<body>
+
+    <h1>🎮 Welcome to CodeQuest!</h1>
+
+    <h2>Hello, {{ user.username }} 👋</h2>
+
+    <hr>
+
+    <h3>Your Progress</h3>
+
+    <p>
+        ⭐ Points:
+        <strong>{{ user.points }}</strong>
+    </p>
+
+    <p>
+        🏆 Level:
+        <strong>{{ user.level }}</strong>
+    </p>
+
+    <br>
+
+    <h3>🚀 Start Coding</h3>
+
+    <p>Choose your difficulty:</p>
+
+    <button>Easy</button>
+    <button>Medium</button>
+    <button>Hard</button>
+
+    <br><br>
+
+    <a href="/logout">
+        <button>Logout</button>
+    </a>
+
+</body>
+
+</html>
