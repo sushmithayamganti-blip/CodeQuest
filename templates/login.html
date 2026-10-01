@@ -1,53 +1,288 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>CodeQuest - Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeQuest | Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background:
+                radial-gradient(circle at top left, #3b0a75, transparent 35%),
+                radial-gradient(circle at bottom right, #004b6b, transparent 35%),
+                linear-gradient(135deg, #070018, #10002b, #001a2b);
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Background glow */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: #7c3cff;
+            filter: blur(150px);
+            opacity: 0.25;
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: #00d9ff;
+            filter: blur(150px);
+            opacity: 0.2;
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .container {
+            width: 400px;
+            padding: 42px 38px;
+            background: rgba(12, 8, 35, 0.88);
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            border-radius: 22px;
+            box-shadow:
+                0 0 25px rgba(0, 217, 255, 0.15),
+                0 0 70px rgba(124, 60, 255, 0.12);
+            backdrop-filter: blur(15px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            font-size: 45px;
+            margin-bottom: 5px;
+        }
+
+        .logo h1 {
+            font-size: 34px;
+            letter-spacing: 2px;
+            color: #00d9ff;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.6);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa9bd;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-box {
+            margin-bottom: 18px;
+        }
+
+        .input-box label {
+            display: block;
+            font-size: 13px;
+            color: #d7d5e5;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border-radius: 10px;
+            border: 1px solid #302b52;
+            outline: none;
+            background: #0b0820;
+            color: white;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #00d9ff;
+            box-shadow: 0 0 12px rgba(0, 217, 255, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #6c2cff, #00bfff);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 18px rgba(0, 191, 255, 0.25);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.45);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 25px 0;
+            color: #6f6b83;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #302b52;
+        }
+
+        .signup-text {
+            text-align: center;
+            color: #9693a8;
+            font-size: 14px;
+        }
+
+        .signup-text a {
+            color: #00d9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-text a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #77748b;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .back-home a:hover {
+            color: #00d9ff;
+        }
+
+        .game-tag {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 11px;
+            color: #555268;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 35px 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🎮 CodeQuest</h1>
+    <div class="container">
 
-    <h2>Login</h2>
+        <div class="logo">
+            <div class="logo-icon">🎮</div>
+            <h1>CODEQUEST</h1>
+        </div>
 
-    <form method="POST">
+        <div class="subtitle">
+            Enter the arena. Solve. Level up.
+        </div>
 
-        <label>Username or Email</label>
-        <br>
+        <form method="POST">
 
-        <input
-            type="text"
-            name="username"
-            required
-        >
+            <div class="input-box">
+                <label>USERNAME OR EMAIL</label>
 
-        <br><br>
+                <div class="input-wrapper">
+                    <span>👤</span>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter username or email"
+                        required
+                    >
+                </div>
+            </div>
 
-        <label>Password</label>
-        <br>
+            <div class="input-box">
+                <label>PASSWORD</label>
 
-        <input
-            type="password"
-            name="password"
-            required
-        >
+                <div class="input-wrapper">
+                    <span>🔐</span>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+            </div>
 
-        <br><br>
+            <button type="submit" class="login-btn">
+                ⚡ ENTER CODEQUEST
+            </button>
 
-        <button type="submit">
-            Login
-        </button>
+        </form>
 
-    </form>
+        <div class="divider">
+            OR
+        </div>
 
-    <br>
+        <div class="signup-text">
+            New player?
+            <a href="/signup">Create Account</a>
+        </div>
 
-    <p>
-        Don't have an account?
-        <a href="/signup">Create Account</a>
-    </p>
+        <div class="back-home">
+            <a href="/">← Back to Home</a>
+        </div>
+
+        <div class="game-tag">
+            CODE • PLAY • CONQUER
+        </div>
+
+    </div>
 
 </body>
-
 </html>
